@@ -96,17 +96,6 @@ fun PokemonDetailFragment(
                         .size(pokemonImageSize)
                         .offset()
                 )
-
-//                pokemonInfo.data?.sprites?.let {
-//                    CoilImage(
-//                        data = it.front_default,
-//                        contentDescription = pokemonInfo.data.name,
-//                        fadeIn = true,
-//                        modifier = Modifier
-//                            .size(pokemonImageSize)
-//                            .offset()
-//                    )
-//                }
             }
         }
     }

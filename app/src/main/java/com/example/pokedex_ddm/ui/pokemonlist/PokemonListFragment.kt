@@ -33,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -52,7 +51,7 @@ import com.example.pokedex_ddm.R
 import com.example.pokedex_ddm.data.models.PokedexListEntry
 
 @Composable
-fun PokemonListScreen (
+fun PokemonListFragment (
     navController: NavController,
     viewModel: PokemonListViewModel = hiltViewModel()
 ) {
@@ -116,7 +115,7 @@ fun SearchBar(
                     isHintDisplayed = !it.isFocused && text.isNotEmpty();
                 }
         )
-        if(isHintDisplayed) {
+        if(!isHintDisplayed) {
             Text(
                 text = hint,
                 color = Color.LightGray,
@@ -187,7 +186,7 @@ fun PokedexEntry(
             )
             .clickable {
                 navController.navigate(
-                    "pokemon_detail_screen/${dominantColor.toArgb()}/${entry.pokemonName}"
+                    "pokemon_detail_fragment/${dominantColor.toArgb()}/${entry.pokemonName}"
                 )
             }
     ) {
@@ -233,13 +232,13 @@ fun PokedexRow(
 ) {
     Column {
         Row {
-           PokedexEntry(
+            PokedexEntry(
                entry = entries[rowIndex * 2],
                navController = navController,
                modifier = Modifier.weight(1f)
-           )
-            Spacer(modifier = Modifier.height(16.dp))
+            )
             if(entries.size >= rowIndex * 2 + 2) {
+                Spacer(modifier = Modifier.weight(0.1f))
                 PokedexEntry(
                     entry = entries[rowIndex * 2 + 1],
                     navController = navController,
