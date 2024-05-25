@@ -39,13 +39,14 @@ fun PokemonDetailFragment(
     pokemonName: String,
     navController: NavController,
     topPadding: Dp = 20.dp,
-    pokemonImageSize: Dp = 200.dp,
+    pokemonImageSize: Dp = 325.dp,
     viewModel: PokemonDetailViewModel = hiltViewModel()
 ) {
 
     val pokemonInfo = produceState<Resource<Pokemon>>(initialValue = Resource.Loading()) {
         value = viewModel.getPokemonInfo(pokemonName)
     }.value
+    val pokemonInfo2 = "Teste Renan"
     Box(modifier = Modifier
         .fillMaxSize()
         .background(dominantColor)
@@ -59,14 +60,15 @@ fun PokemonDetailFragment(
                 .align(Alignment.TopCenter)
         )
         PokemonDetailStateWrapper(
-            pokemonInfo = pokemonInfo,
+            pokemonInfo = pokemonInfo2,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = topPadding + pokemonImageSize / 2f,
-                         start = 16.dp,
-                         end = 16.dp,
-                         bottom = 16.dp
-                    )
+                .padding(
+                    top = topPadding + pokemonImageSize / 2f,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 16.dp
+                )
                 .shadow(10.dp, RoundedCornerShape(10.dp))
                 .clip(RoundedCornerShape(10.dp))
                 .background(MaterialTheme.colors.surface)
@@ -75,7 +77,8 @@ fun PokemonDetailFragment(
             loadingModifier = Modifier
                 .size(100.dp)
                 .align(Alignment.Center)
-                .padding(top = topPadding + pokemonImageSize / 2f,
+                .padding(
+                    top = topPadding + pokemonImageSize / 2f,
                     start = 16.dp,
                     end = 16.dp,
                     bottom = 16.dp
@@ -129,27 +132,30 @@ fun PokemonDetailTopSection(
 
 @Composable
 fun PokemonDetailStateWrapper(
-    pokemonInfo : Resource<Pokemon>,
+    pokemonInfo : String,
     modifier: Modifier = Modifier,
     loadingModifier: Modifier = Modifier
 ) {
-    when(pokemonInfo) {
-        is Resource.Success -> {
-
-        }
-        is Resource.Error -> {
-            Text(
-                text = pokemonInfo.message!!,
-                color = Color.Red,
-                modifier = modifier
-            )
-        }
-        is Resource.Loading -> {
-            CircularProgressIndicator(
-                color = MaterialTheme.colors.primary,
-                modifier = loadingModifier
-            )
-        }
+    Text(
+        text = pokemonInfo,
+        color = Color.Green,
+        modifier = modifier
+    )
+//    when(pokemonInfo) {
+//        is Resource.Success -> {
+//
+//        }
+//        is Resource.Error -> {
+//            Text(
+//                text = pokemonInfo.message!!,
+//                color = Color.Red,
+//                modifier = modifier
+//            )
+//        }
+//        is Resource.Loading -> {
+//            CircularProgressIndicator(
+//                color = MaterialTheme.colors.primary,
+//                modifier = loadingModifier
+//            )
+//        }
     }
-
-}

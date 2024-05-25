@@ -14,14 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,11 +75,10 @@ fun PokemonListFragment (
                 hint = "Search...",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp, 24.dp, 16.dp, 8.dp)
             ){
                 viewModel.searchPokemonList(it)
             }
-            Spacer(modifier = Modifier.height(16.dp))
             PokemonList(navController = navController)
         }
     }
@@ -94,6 +96,7 @@ fun SearchBar(
     var isHintDisplayed by remember {
         mutableStateOf(hint != "")
     }
+    var isFocused by remember { mutableStateOf(false) }
 
     Box(modifier = modifier) {
         BasicTextField (
@@ -105,24 +108,39 @@ fun SearchBar(
             maxLines = 1,
             singleLine = true,
             textStyle = TextStyle(color = Color.Black),
+            decorationBox = { innerTextField ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    if (text.isEmpty() && !isFocused) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = Color.LightGray,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Procurar Pokémon...",
+                            style = TextStyle(color = Color.Gray, fontSize = 16.sp)
+                        )
+                    } else {
+                        innerTextField()
+                    }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(5.dp, CircleShape)
+                .shadow(5.dp, RoundedCornerShape(10.dp))
                 .background(Color.White)
-                /***/
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    isHintDisplayed = !it.isFocused && text.isNotEmpty();
+                    isHintDisplayed = it.isFocused && text.isNotEmpty();
+                    isFocused = it.isFocused
                 }
         )
-        if(!isHintDisplayed) {
-            Text(
-                text = hint,
-                color = Color.LightGray,
-                modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
-            )
-        }
     }
 }
 
