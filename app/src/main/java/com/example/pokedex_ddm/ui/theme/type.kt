@@ -20,6 +20,11 @@ val RobotoCondensed = FontFamily(
     Font(R.font.roboto_condensed_regular, FontWeight.Normal),
 )
 
+val PokemonFont = FontFamily(
+    Font(R.font.pokemon_solid, FontWeight.Bold),
+    Font(R.font.pokemon_hollow, FontWeight.Normal)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     body1 = TextStyle(
@@ -27,6 +32,11 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
+    body2 = TextStyle(
+        fontFamily = PokemonFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 40.sp
+    )
     /* Other default text styles to override
     button = TextStyle(
         fontFamily = FontFamily.Default,

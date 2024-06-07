@@ -19,7 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pokedex_android.ui.theme.JetpackComposePokedexTheme
 import com.example.pokedex_ddm.databinding.ActivityMainBinding
-import com.example.pokedex_ddm.ui.favorites.FavoritePokemonsScreen
+import com.example.pokedex_ddm.ui.favorites.FavoritePokemonsFragment
+import com.example.pokedex_ddm.ui.login.LoginFragment
 import com.example.pokedex_ddm.ui.navigation.BottomNavigationBar
 import com.example.pokedex_ddm.ui.navigation.MainViewModel
 import com.example.pokedex_ddm.ui.pokemondetail.PokemonDetailFragment
@@ -75,10 +76,10 @@ class MainActivity : ComponentActivity() {
                     navController = navController)
             }
             composable(BottomNavItem.Favorites.screenRoute) {
-                FavoritePokemonsScreen(navController = navController)
+                FavoritePokemonsFragment(navController = navController)
             }
             composable(BottomNavItem.Profile.screenRoute) {
-//                SettingsScreen()
+                LoginFragment(navController = navController)
             }
         }
     }

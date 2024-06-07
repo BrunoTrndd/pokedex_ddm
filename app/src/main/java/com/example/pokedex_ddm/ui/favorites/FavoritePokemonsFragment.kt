@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 import com.example.pokedex_ddm.ui.pokemonlist.PokedexEntry
 
 @Composable
-fun FavoritePokemonsScreen(
+fun FavoritePokemonsFragment(
     navController: NavController,
     viewModel: FavoritePokemonsViewModel = hiltViewModel()
 ) {
