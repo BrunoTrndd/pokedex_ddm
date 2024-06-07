@@ -27,8 +27,8 @@ class MainViewModel : ViewModel() {
 fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewModel) {
     val items = listOf(
         BottomNavItem.Home,
+        BottomNavItem.Favorites,
         BottomNavItem.Profile,
-        BottomNavItem.Settings
     )
     BottomNavigation(
         backgroundColor = Color.White,

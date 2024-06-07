@@ -24,8 +24,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -151,7 +153,6 @@ fun PokemonList(
 ) {
     val pokemonList by remember { viewModel.pokemonList }
     val endReached by remember { viewModel.endReached }
-    val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
     val isSearching by remember { viewModel.isSearching }
 
@@ -172,6 +173,33 @@ fun PokemonList(
 
 }
 
+@Composable
+fun PokedexRow(
+    rowIndex: Int,
+    entries: List<PokedexListEntry>,
+    navController: NavController
+) {
+    Column {
+        Row {
+            PokedexEntry(
+                entry = entries[rowIndex * 2],
+                navController = navController,
+                modifier = Modifier.weight(1f)
+            )
+            if(entries.size >= rowIndex * 2 + 2) {
+                Spacer(modifier = Modifier.weight(0.1f))
+                PokedexEntry(
+                    entry = entries[rowIndex * 2 + 1],
+                    navController = navController,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
 
 @Composable
 fun PokedexEntry(
@@ -184,10 +212,11 @@ fun PokedexEntry(
     var dominantColor by remember {
         mutableStateOf(defaultDominantColor)
     }
-    val pokemonList by remember { viewModel.pokemonList }
-    val endReached by remember { viewModel.endReached }
-    val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
+
+    val isFavoriteFlow = viewModel.isPokemonFavorite(entry.pokemonName)
+    val isFavorite by isFavoriteFlow.collectAsState()
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -209,23 +238,41 @@ fun PokedexEntry(
             }
     ) {
         Column {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(entry.imageUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = entry.pokemonName,
-                modifier = Modifier
-                    .size(120.dp)
-                    .align(Alignment.CenterHorizontally),
-                onSuccess = { result ->
-                    viewModel.calcDominantColor(result.result.drawable) { color ->
-                        dominantColor = color
+            Box(modifier = Modifier.fillMaxWidth()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(entry.imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = entry.pokemonName,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .align(Alignment.Center)
+                        .padding(top = 8.dp),
+                    onSuccess = { result ->
+                        viewModel.calcDominantColor(result.result.drawable) { color ->
+                            dominantColor = color
+                        }
                     }
-                }
-            )
+                )
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Add to favorites",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(15.dp, 5.dp)
+                        .clickable {
+                            if (isFavorite) {
+                                viewModel.removeFromFavorites(entry)
+                            } else {
+                                viewModel.addToFavorites(entry)
+                            }
+                            viewModel.addToFavorites(entry)
+                        }
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
-            if(isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier.scale(0.5f)
@@ -242,30 +289,3 @@ fun PokedexEntry(
     }
 }
 
-@Composable
-fun PokedexRow(
-    rowIndex: Int,
-    entries: List<PokedexListEntry>,
-    navController: NavController
-) {
-    Column {
-        Row {
-            PokedexEntry(
-               entry = entries[rowIndex * 2],
-               navController = navController,
-               modifier = Modifier.weight(1f)
-            )
-            if(entries.size >= rowIndex * 2 + 2) {
-                Spacer(modifier = Modifier.weight(0.1f))
-                PokedexEntry(
-                    entry = entries[rowIndex * 2 + 1],
-                    navController = navController,
-                    modifier = Modifier.weight(1f)
-                )
-            } else {
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-}

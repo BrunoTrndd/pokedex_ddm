@@ -17,6 +17,8 @@ import com.example.pokedex_ddm.data.models.PokedexListEntry
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -31,6 +33,9 @@ class PokemonListViewModel @Inject constructor (
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
+
+    private val _favoritePokemons = MutableStateFlow<List<PokedexListEntry>>(emptyList())
+    val favoritePokemons: StateFlow<List<PokedexListEntry>> = _favoritePokemons
 
     private var cachedPokemonList = listOf<PokedexListEntry>()
     private var isSearchStarting = true
@@ -105,6 +110,29 @@ class PokemonListViewModel @Inject constructor (
             palette?.dominantSwatch?.rgb?.let { colorValue ->
                 onFinish(Color(colorValue))
             }
+        }
+    }
+
+    fun addToFavorites(entry: PokedexListEntry) {
+        viewModelScope.launch {
+            repository.addPokemonToFavorites(entry)
+            _favoritePokemons.value = repository.getFavoritePokemons()
+        }
+    }
+
+    fun isPokemonFavorite(pokemonName: String): StateFlow<Boolean> {
+        val isFavorite = MutableStateFlow(false)
+        viewModelScope.launch {
+            val favorites = repository.getFavoritePokemons()
+            isFavorite.value = favorites.any { it.pokemonName == pokemonName }
+        }
+        return isFavorite
+    }
+
+    fun removeFromFavorites(entry: PokedexListEntry) {
+        viewModelScope.launch {
+            repository.removePokemonFromFavorites(entry)
+            _favoritePokemons.value = repository.getFavoritePokemons()
         }
     }
 

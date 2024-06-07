@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.runtime)
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
